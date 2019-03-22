@@ -1,0 +1,342 @@
+% The MIT License (MIT)
+% =====================
+
+% **Copyright (c) 2018 Anish Athalye (me@anishathalye.com)**
+
+% Permission is hereby granted, free of charge, to any person obtaining a copy of
+% this software and associated documentation files (the "Software"), to deal in
+% the Software without restriction, including without limitation the rights to
+% use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+% of the Software, and to permit persons to whom the Software is furnished to do
+% so, subject to the following conditions:
+
+% The above copyright notice and this permission notice shall be included in all
+% copies or substantial portions of the Software.
+
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+% SOFTWARE.
+
+
+% Gemini theme
+% https://github.com/anishathalye/gemini
+
+\documentclass[final]{beamer}
+
+% ====================
+% Packages
+% ====================
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[size=custom,width=130 ,height=100,scale=1.0]{beamerposter}
+\usetheme{gemini}
+\usecolortheme{gemini}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tcolorbox}
+\usepackage{geometry}
+
+% ====================
+% Lengths
+% ====================
+
+% If you have N columns, choose \sepwidth and \colwidth such that
+% (N+1)*\sepwidth + N*\colwidth = \paperwidth
+\newlength{\sepwidth}
+\newlength{\colwidth}
+\setlength{\sepwidth}{0.025\paperwidth}
+\setlength{\colwidth}{0.3\paperwidth}
+
+\newcommand{\separatorcolumn}{\begin{column}{\sepwidth}\end{column}}
+
+% ====================
+% Title
+% ====================
+
+\title{Developing a QIIME 2 plugin - a Simple Annotation for Robust Tools}
+
+\author{Christopher R. Keefe \and Evan Bolyen \textsuperscript{†} \and Matthew Ryan Dillon \textsuperscript{†} \and J. Gregory Caporaso \textsuperscript{†} }
+
+\institute[shortinst]{The Pathogen and Microbiome Institute at Northern Arizona University \\
+{\footnotesize \textsuperscript{†} Advisors} }
+
+% ====================
+% Body
+% ====================
+
+\begin{document}
+
+\begin{frame}[t]
+\begin{columns}[t]
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+  \begin{block}{Objective and Introduction}
+
+    \textbf{Objective:} To provide a high-level introduction to the process and
+     benefits of developing a  QIIME 2 \cite{10.7287/peerj.preprints.27295v1}
+     plugin for computational methods for microbiome science.
+    \hfill\break
+
+    \textbf{Introduction:} By wrapping a script in a python 3 package, then
+    annotating it with citation/authorship information and information about
+    the commands it makes available, the parameters they expose, and the types
+    of data they take in and put out, a plugin author can take advantage of
+    existing QIIME 2 infrastructure. This can greatly increase the robustness
+    and accessibility of their script, improve distribution and citation, and
+    facilitate the incorporation of their method into new and existing
+    analytical pipelines.
+    \hfill\break
+
+    \textbf{QIIME 2 provides:}
+    \begin{itemize}
+      \item Interfaces: Familiar and powerful user interfaces for a diverse
+      user base (e.g. API, command line, graphical, galaxy, cwl)
+      \item Community: A vibrant user base, free forum infrastructure for
+      plugin support
+      \item Visibility: Centralized plugin publishing through the QIIME 2
+      Library
+      \item Provenance: Integrated and automatic tracking of data provenance,
+      and built-in citation support
+      \item Low-level infrastructure: facilitates data I/O, communication
+      between disparate methods within an analytical pipeline, and
+      cross-platform software use
+      \item Semantic typing: A rich and extensible type system prevents user
+      error, supports backwards compatability and collaboration
+      \item Sharing: Allows secure interaction with QIIME 2 artifacts and
+      visualizations without a software installation
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Develop a method or algorithm}
+
+  In order to develop a QIIME 2 plugin, you must first have code you would
+  like to run in QIIME 2. Your method may be written Python 3, or in any
+  language accessible to Python 3 with a sub-process call; popular plugins wrap
+  code written in R and C, but many options exist.
+  \hfill\break
+
+    \begin{tcolorbox}
+    [width=\textwidth, colframe=blue]
+      {DADA2 wraps C??? code as follows: \\
+      HERE IS A SCREENCAP OF DADA2 SUBPROCESS CALL?}
+    \end{tcolorbox}
+
+  For the remainder of this poster, we will work with code examples from
+  \code{q2-diversity-lib}, a plugin in development for release with QIIME 2 2019.4
+  \end{block}
+
+  \begin{block}{Create a python package}
+
+    Plugins are python packages with metadata hooks which QIIME 2 uses to facilitate
+    communication with the other plugins in a given deployment. Packaging
+    provides the added benefit of making plugin installation easy for users:
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=16cm]{assets/HPC_Analysis}}
+      \caption{\,Diagram like the MAKE THE REPO diagram in Claire's walkthrough}
+      \label{fig:dada2}
+    \end{figure}
+
+    \begin{tcolorbox}
+    [width=\textwidth, colframe=blue]
+    {Python packaging may be the most challenging part of plugin creation
+    for new developers, because the structure of your software will dictate
+    the structure of the package you build. }
+    \end{tcolorbox}
+    TODO: Reference the tree above\\
+    General guidelines:
+    \begin{itemize}
+      \item Define one or more Python 3 functions, installable with \code{setuptools}
+      \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
+      \item In your plugin package's \code{setup.py}, define that instance as an entry point
+      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which contains function definitions. Note: some of these \code{\_\_init\_\_.py}
+      files will only serve to aggregate and make visible subfolder function names
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Introduce new kinds of data}
+    Experienced users may run downstream analysis using the Artifact API in
+    a Jupyter Notebook \cite{PER-GRA:2007} (Figure \ref{fig:taxabar})
+    Alternatively, analysis may proceed in QIIME 2 Studio, a GUI
+    that provides asynchronous process handling and access to all
+    QIIME 2 plugins in our environment (Figure \ref{fig:q2studio})
+
+    \begin{tcolorbox}
+    [width=\textwidth, colframe=blue]
+    {Throughout this complex analysis, QIIME 2 records our methods.
+    The provenance in our \code{Artifact}s and visualizations minimizes
+    uncertainty about which file is correct.}
+    \end{tcolorbox}
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=10cm]{assets/jupyter}}
+      \caption{\, Selection from the Jupyter Notebook used for downstream analysis conducted with the Artifact API}
+      \label{fig:taxabar}
+    \end{figure}
+
+  \end{block}
+
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+  \begin{block}{Our Analysis and the Atacama Study}
+    \begin{tcolorbox}
+    The analysis which frames this poster is based on work by Neilson et al in
+    “Significant Impacts of Increasing Aridity on the Arid Soil Microbiome”
+    \cite{Neilsone00195-16}. This study documents correlations between aridity
+    and changes in the soil microbiome along two arid-to-hyperarid transects in
+    the Atacama Desert, Chile. For new users interested in understanding
+    our approach, a tutorial based on this study is available in the
+    QIIME 2 docs (https://docs.qiime.org).
+    \end{tcolorbox}
+  \end{block}
+
+
+  \begin{block}{Visualizations}
+    \begin{figure}[tph!]
+      {\includegraphics[height=14cm]{assets/provenance}}
+      \caption{\,Provenance tree describing the production of a taxonomic bar plot visualization. QR code provides interactive access to both provenance tree and bar plot (Figure 4).}
+      \label{fig:provenance}
+    \end{figure}
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=20cm]{assets/taxabar-plot}}
+      \caption{\,Taxonomic bar plot sorted by Average Soil Relative Humidity on the x-axis }
+      \label{fig:taxabar-plot}
+    \end{figure}
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=18cm]{assets/q2studio}}
+      \caption{\,QIIME 2 Studio provides GUI access to all QIIME 2 plugins installed in the currently active QIIME 2 environment}
+      \label{fig:q2studio}
+    \end{figure}
+  \end{block}
+
+  \begin{block}{Project Funding}
+      \begin{figure}[!htb]
+        \minipage{0.31\textwidth}%
+          \begin{center}
+            \includegraphics[width=.35\linewidth]{assets/SponsorLogos/ABOR}
+          \end{center}
+        \endminipage
+        \hskip 2cm
+        \minipage{0.31\textwidth}
+          \begin{center}
+            \includegraphics[width=.42\linewidth]{assets/SponsorLogos/APSloanFdn}
+          \end{center}
+        \endminipage\hfill
+        \minipage{0.31\textwidth}
+          \begin{center}
+            \includegraphics[width=.50\linewidth]{assets/SponsorLogos/NSF}
+          \end{center}
+        \endminipage\hfill
+      \end{figure}
+  \end{block}
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+    \begin{block}{Annotate your method}
+      QIIME 2 visualizations can be shared and viewed without a software
+      install, and contain complete provenance information.
+
+      \begin{enumerate}
+        \item Interactive visualizations are significant in understanding and
+        communicating our data. (Figure \ref{fig:taxabar-plot})
+        \item QIIME 2's provenance graphs allow us to review which methods and
+        parameters were used, simplifying creation of an accurate methods section
+        and supplementary materials for academic publications.
+        \item We can generate a citation list for any result in this poster with \code{qiime tools citations}
+        \item Collaborators and reviewers of our work can use https://view.qiime2.org to confirm methods and outcomes are
+        appropriate, without the need to download any special software. (Figure 6)
+      \end{enumerate}
+
+    \begin{tcolorbox}
+    [width=\textwidth, colframe=blue]
+    {By packaging \code{Result}s with provenance, QIIME 2 reduces the risk that the
+    methods used to produce a given outcome are accidentally misreported.
+    QIIME 2 has integrated citation information into plugins, allowing
+    researchers to export citations as BibTeX}.
+    \end{tcolorbox}
+
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=17cm]{assets/emperor}}
+      \caption{\,Color gradient represents Average Soil Relative Humidity, with purple ≈ 18 and yellow = 100. Vector colors represent independent clades. \\ \\The magnitude and direction of a vector represents the relative contribution of a given amplicon sequence variant (ASV) to the distance between samples (points). Red: Unknown Bacteria ASV (Kingdom), Green: Bacteria (Kingdom) Actinobacteria (Phylum) Actinobacteria (Class), Blue: Bacteria (Kingdom) Actinobacteria (Phylum) Acidimicrobiia (Class), Purple: Bacteria (Kingdom) Proteobacteria (Phylum) Gammaproteobacteria (Class)}
+      \label{fig:emperor}
+    \end{figure}
+
+  \end{block}
+
+  \begin{block}{Publish and support}
+
+    QIIME 2’s decentralized provenance tracking makes it easy for anyone to reproduce our
+    computational analysis independently to confirm the quality of our results.
+    Should one choose to expand our study, or conduct further research using
+    similar methods, provenance graphs provide a “road map”.
+
+  \end{block}
+
+  \begin{block}{Future capabilities}
+
+    \begin{itemize}
+      \item \textbf{Allow QIIME 2 to consume provenance:} Reading
+      provenance \textit{into} QIIME 2 could allow for computer-assisted
+      introspection into research methods, automated transcription of methods
+      for publication, and auto-generation of “pipeline” scripts for common workflows.
+      \item \textbf{QIIME 2 Studio and HPC:} In the future, we hope that QIIME 2 Studio might interact
+      directly with HPC schedulers, to simplify the process of connecting with
+      and running computationally-intensive processes remotely.
+    \end{itemize}
+
+  \end{block}
+
+  \begin{block}{Further Reading}
+    \begin{itemize}
+      \item [Developing a (QIIME 2) Plugin for Dummies](https://dev.qiime2.org/latest/tutorials/first-plugin-tutorial/)
+      \item [Developing a QIIME 2 Plugin](https://docs.qiime2.org/2019.1/plugins/developing/)
+      \item [QIIME 2 Library](https://library.qiime2.org/)
+      \item [Python Packaging](https://python-packaging.readthedocs.io/en/latest/minimal.html)
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{References}
+
+    \nocite{*}
+    \bibliographystyle{acm}\bibliography{poster}
+
+  \end{block}
+
+  \begin{figure}
+    \begin{minipage}[c]{\textwidth}
+      \hfill
+      \includegraphics[height=5cm]{assets/repo}
+    \end{minipage}
+    \begin{minipage}[c]{\textwidth}
+      \hfill
+      Poster Source: https://github.com/ChrisKeefe/SACMDA19
+    \end{minipage}
+\end{figure}
+
+
+\end{column}
+
+\separatorcolumn
+\end{columns}
+\end{frame}
+
+\end{document}
