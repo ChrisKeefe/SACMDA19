@@ -134,56 +134,30 @@
   \code{q2-diversity-lib}, a plugin in development for release with QIIME 2 2019.4
   \end{block}
 
-  \begin{block}{Create a python package}
+  \begin{block}{Annotate your method}
+    QIIME 2 visualizations can be shared and viewed without a software
+    install, and contain complete provenance information.
 
-    Plugins are python packages with metadata hooks which QIIME 2 uses to facilitate
-    communication with the other plugins in a given deployment. Packaging
-    provides the added benefit of making plugin installation easy for users:
+    \begin{enumerate}
+      \item Interactive visualizations are significant in understanding and
+      communicating our data. (Figure \ref{fig:taxabar-plot})
+      \item QIIME 2's provenance graphs allow us to review which methods and
+      parameters were used, simplifying creation of an accurate methods section
+      and supplementary materials for academic publications.
+      \item We can generate a citation list for any result in this poster with \code{qiime tools citations}
+      \item Collaborators and reviewers of our work can use https://view.qiime2.org to confirm methods and outcomes are
+      appropriate, without the need to download any special software. (Figure 6)
+    \end{enumerate}
 
-    \begin{figure}[tph!]
-      {\includegraphics[height=16cm]{assets/HPC_Analysis}}
-      \caption{\,Diagram like the MAKE THE REPO diagram in Claire's walkthrough}
-      \label{fig:dada2}
-    \end{figure}
+  \begin{tcolorbox}
+  [width=\textwidth, colframe=blue]
+  {By packaging \code{Result}s with provenance, QIIME 2 reduces the risk that the
+  methods used to produce a given outcome are accidentally misreported.
+  QIIME 2 has integrated citation information into plugins, allowing
+  researchers to export citations as BibTeX}.
+  \end{tcolorbox}
 
-    \begin{tcolorbox}
-    [width=\textwidth, colframe=blue]
-    {Python packaging may be the most challenging part of plugin creation
-    for new developers, because the structure of your software will dictate
-    the structure of the package you build. }
-    \end{tcolorbox}
-    TODO: Reference the tree above\\
-    General guidelines:
-    \begin{itemize}
-      \item Define one or more Python 3 functions, installable with \code{setuptools}
-      \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
-      \item In your plugin package's \code{setup.py}, define that instance as an entry point
-      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which contains function definitions. Note: some of these \code{\_\_init\_\_.py}
-      files will only serve to aggregate and make visible subfolder function names
-    \end{itemize}
-  \end{block}
-
-  \begin{block}{Introduce new kinds of data}
-    Experienced users may run downstream analysis using the Artifact API in
-    a Jupyter Notebook \cite{PER-GRA:2007} (Figure \ref{fig:taxabar})
-    Alternatively, analysis may proceed in QIIME 2 Studio, a GUI
-    that provides asynchronous process handling and access to all
-    QIIME 2 plugins in our environment (Figure \ref{fig:q2studio})
-
-    \begin{tcolorbox}
-    [width=\textwidth, colframe=blue]
-    {Throughout this complex analysis, QIIME 2 records our methods.
-    The provenance in our \code{Artifact}s and visualizations minimizes
-    uncertainty about which file is correct.}
-    \end{tcolorbox}
-
-    \begin{figure}[tph!]
-      {\includegraphics[height=10cm]{assets/jupyter}}
-      \caption{\, Selection from the Jupyter Notebook used for downstream analysis conducted with the Artifact API}
-      \label{fig:taxabar}
-    \end{figure}
-
-  \end{block}
+\end{block}
 
 \end{column}
 
@@ -191,18 +165,20 @@
 
 \begin{column}{\colwidth}
 
-  \begin{block}{Our Analysis and the Atacama Study}
+  \begin{block}{Introduce new kinds of data}
+    Some computational methods require the creation of novel data formats, or
+    entirely new types of data. By defining these as Semantic Types in your plugin,
+    you allow other QIIME 2 plugins to recognize and use your new data types effectively.
+
     \begin{tcolorbox}
-    The analysis which frames this poster is based on work by Neilson et al in
-    “Significant Impacts of Increasing Aridity on the Arid Soil Microbiome”
-    \cite{Neilsone00195-16}. This study documents correlations between aridity
-    and changes in the soil microbiome along two arid-to-hyperarid transects in
-    the Atacama Desert, Chile. For new users interested in understanding
-    our approach, a tutorial based on this study is available in the
-    QIIME 2 docs (https://docs.qiime.org).
+    [width=\textwidth, colframe=blue]
+    {NOTE: The creation of new Semantic Types is a great opportunity for collaboration
+    with other developers in the field. Well-architected Types benefit analytical pipeline
+    development, and help improve QIIME 2's "understanding" of microbiome data. Further,
+    a clear understanding of the Types your method interacts with can clarify and improve the method
+    development process.}
     \end{tcolorbox}
   \end{block}
-
 
   \begin{block}{Visualizations}
     \begin{figure}[tph!]
@@ -250,36 +226,33 @@
 
 \begin{column}{\colwidth}
 
-    \begin{block}{Annotate your method}
-      QIIME 2 visualizations can be shared and viewed without a software
-      install, and contain complete provenance information.
+  \begin{block}{Create a python package}
 
-      \begin{enumerate}
-        \item Interactive visualizations are significant in understanding and
-        communicating our data. (Figure \ref{fig:taxabar-plot})
-        \item QIIME 2's provenance graphs allow us to review which methods and
-        parameters were used, simplifying creation of an accurate methods section
-        and supplementary materials for academic publications.
-        \item We can generate a citation list for any result in this poster with \code{qiime tools citations}
-        \item Collaborators and reviewers of our work can use https://view.qiime2.org to confirm methods and outcomes are
-        appropriate, without the need to download any special software. (Figure 6)
-      \end{enumerate}
+    Plugins are python packages with metadata hooks which QIIME 2 uses to facilitate
+    communication with the other plugins in a given deployment. Packaging
+    provides the added benefit of making plugin installation easy for users:
+
+    \begin{figure}[tph!]
+      {\includegraphics[height=16cm]{assets/HPC_Analysis}}
+      \caption{\,TODO: Diagram like the MAKE THE REPO diagram in Claire's walkthrough}
+      \label{fig:dada2}
+    \end{figure}
 
     \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
-    {By packaging \code{Result}s with provenance, QIIME 2 reduces the risk that the
-    methods used to produce a given outcome are accidentally misreported.
-    QIIME 2 has integrated citation information into plugins, allowing
-    researchers to export citations as BibTeX}.
+    {Python packaging may be the most challenging part of plugin creation
+    for new developers, because the structure of your software will dictate
+    the structure of the package you build. }
     \end{tcolorbox}
-
-
-    \begin{figure}[tph!]
-      {\includegraphics[height=17cm]{assets/emperor}}
-      \caption{\,Color gradient represents Average Soil Relative Humidity, with purple ≈ 18 and yellow = 100. Vector colors represent independent clades. \\ \\The magnitude and direction of a vector represents the relative contribution of a given amplicon sequence variant (ASV) to the distance between samples (points). Red: Unknown Bacteria ASV (Kingdom), Green: Bacteria (Kingdom) Actinobacteria (Phylum) Actinobacteria (Class), Blue: Bacteria (Kingdom) Actinobacteria (Phylum) Acidimicrobiia (Class), Purple: Bacteria (Kingdom) Proteobacteria (Phylum) Gammaproteobacteria (Class)}
-      \label{fig:emperor}
-    \end{figure}
-
+    TODO: Reference the tree above\\
+    General guidelines:
+    \begin{itemize}
+      \item Define one or more Python 3 functions, installable with \code{setuptools}
+      \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
+      \item In your plugin package's \code{setup.py}, define that instance as an entry point
+      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which contains function definitions. Note: some of these \code{\_\_init\_\_.py}
+      files will only serve to aggregate and make visible subfolder function names
+    \end{itemize}
   \end{block}
 
   \begin{block}{Publish and support}
@@ -309,6 +282,7 @@
     \begin{itemize}
       \item \href{https://dev.qiime2.org/latest/tutorials/first-plugin-tutorial/}{Developing a (QIIME 2) Plugin for Dummies: dev.qiime2.org/latest/tutorials/first-plugin-tutorial/}
       \item \href{https://docs.qiime2.org/2019.1/plugins/developing/}{Developing a QIIME 2 Plugin: docs.qiime2.org/2019.1/plugins/developing/}
+      \item \href{https://dev.qiime2.org/latest/storing-data/types/}{Semantic and Primitive Types: dev.qiime2.org/latest/storing-data/types/}
       \item \href{https://library.qiime2.org/}{QIIME 2 Library: library.qiime2.org/}
       \item \href{https://python-packaging.readthedocs.io/en/latest/minimal.html}{Python Packaging: python-packaging.readthedocs.io/en/latest/minimal.html}
     \end{itemize}
