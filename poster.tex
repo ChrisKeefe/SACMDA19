@@ -120,14 +120,31 @@
 
   In order to develop a QIIME 2 plugin, you must first have code you would
   like to run in QIIME 2. Your method may be written Python 3, or in any
-  language accessible to Python 3 with a sub-process call; popular plugins wrap
-  code written in R and C, but many options exist.
+  language accessible to Python 3 with a sub-process call: popular plugins wrap
+  code written in R and C, and many options exist.\\
   \hfill\break
-
-    \begin{tcolorbox}
+  Example: the q2\_alignment plugin wraps the MAFFT application by importing \code{subprocess}, generating input and output filepaths, building a command for the OS from user parameters, and using that command to run MAFFT.\\
+      \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
-      {DADA2 wraps C??? code as follows: \\
-      HERE IS A SCREENCAP OF DADA2 SUBPROCESS CALL?}
+      {
+{\texttt{\textcolor{codeblack}{
+import subprocess\\
+from q2\_types.feature\_data import DNAFASTAFormat, AlignedDNAFASTAFormat\\
+\begin{tabbing}
+def \=maff\=t(se\=quences: DNAFASTAFormat,\\
+\>\>n\_threads: int = 1,\\
+\>\>parttree: bool = False) -> AlignedDNAFASTAFormat:\\
+\>unaligned\_filepath = str(sequences.path)\\
+\>result = AlignedDNAFASTAFormat()\\
+\>aligned\_filepath = str(result.path)\\
+\\
+\>cmd = ["\=mafft", "--preservecase", "--inputorder",\\
+\>\>\>"--thread", str(n\_threads), unaligned\_filepath]\\
+\\
+\>with open(aligned\_filepath, 'w') as output\_f:\\
+\>\>subprocess.run(cmd, stdout=output\_f, check=True)
+\end{tabbing}}}}
+      }
     \end{tcolorbox}
 
   For the remainder of this poster, we will work with code examples from
@@ -182,22 +199,22 @@
 
   \begin{block}{Visualizations}
     \begin{figure}[tph!]
-      {\includegraphics[height=14cm]{assets/provenance}}
-      \caption{\,Provenance tree describing the production of a taxonomic bar plot visualization. QR code provides interactive access to both provenance tree and bar plot (Figure 4).}
-      \label{fig:provenance}
+    {\includegraphics[height=24cm]{assets/DevelopmentProcessDiagramGreyWBG}}
+    \caption{\,QIIME 2 plugin development cycle diagram. }
+    \label{fig:taxabar-plot}
     \end{figure}
 
     \begin{figure}[tph!]
-      {\includegraphics[height=20cm]{assets/taxabar-plot}}
-      \caption{\,Taxonomic bar plot sorted by Average Soil Relative Humidity on the x-axis }
-      \label{fig:taxabar-plot}
+    {\includegraphics[height=14cm]{assets/provenance}}
+    \caption{\,Provenance tree describing the production of a taxonomic bar plot visualization. Provenance is automatically packaged with ever QIIME 2 Artifact. QR code provides interactive access to provenance tree and bar plot.}
+    \label{fig:provenance}
     \end{figure}
 
     \begin{figure}[tph!]
       {\includegraphics[height=18cm]{assets/q2studio}}
       \caption{\,QIIME 2 Studio provides GUI access to all QIIME 2 plugins installed in the currently active QIIME 2 environment}
       \label{fig:q2studio}
-    \end{figure}
+      \end{figure}
   \end{block}
 
   \begin{block}{Project Funding}
