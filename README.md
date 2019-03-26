@@ -1,7 +1,7 @@
 # SACMDA19
 Poster: Developing a QIIME 2 plugin - a simple annotation for robust tools
 ## Copyright (c) 2018 Chris Keefe
-### Submitted for presentation at the [3rd Workshop on Statistical and Algorithmic Challenges in Microbiome Data Analysis (SACMDA)](https://www.simonsfoundation.org/event/3rd-workshop-on-statistical-and-algorithmic-challenges-in-microbiome-data-analysis/), 4/1-4/2/19
+### Accepted for presentation at the [3rd Workshop on Statistical and Algorithmic Challenges in Microbiome Data Analysis (SACMDA)](https://www.simonsfoundation.org/event/3rd-workshop-on-statistical-and-algorithmic-challenges-in-microbiome-data-analysis/), 4/1-4/2/19
 
 Copyright details in LICENSE.md
 
