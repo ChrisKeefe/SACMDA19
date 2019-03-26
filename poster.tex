@@ -87,34 +87,38 @@
     \hfill\break
 
     \textbf{Introduction:} By wrapping a script in a python 3 package, then
-    annotating it with citation/authorship information and information about
-    the commands it makes available, the parameters they expose, and the types
-    of data they take in and put out, a plugin author can take advantage of
-    existing QIIME 2 infrastructure. This can greatly increase the robustness
-    and accessibility of their script, improve distribution and citation, and
-    facilitate the incorporation of their method into new and existing
-    analytical pipelines.
+    annotating it with information about the commands it makes available, the
+    parameters they expose, and the types of data they take in and put out, a
+    plugin author can take advantage of existing QIIME 2 infrastructure. This
+    can greatly increase the robustness and accessibility of their script,
+    improve distribution and citation, and facilitate the integration of
+    their method with new and existing analytical pipelines.
     \hfill\break
 
     \textbf{QIIME 2 provides:}
     \begin{itemize}
-      \item Interfaces: Familiar and powerful user interfaces for a diverse
-      user base (e.g. API, command line, graphical, galaxy, cwl)
-      \item Community: A vibrant user base, free forum infrastructure for
+      \item \textbf{Interfaces:} Familiar user interfaces for a diverse
+      user base (e.g. CLI, API, GUI, galaxy, cwl)
+      \item \textbf{Community:} A vibrant user base, free forum infrastructure for
       plugin support
-      \item Visibility: Centralized plugin publishing through the QIIME 2
+      \item \textbf{Visibility:} Centralized plugin publishing through the QIIME 2
       Library
-      \item Provenance: Integrated and automatic tracking of data provenance,
+      \item \textbf{Provenance:} Integrated and automatic tracking of data provenance,
       and built-in citation support
-      \item Low-level infrastructure: facilitates data I/O, communication
-      between disparate methods within an analytical pipeline, and
-      cross-platform software use
-      \item Semantic typing: A rich and extensible type system prevents user
+      \item \textbf{Low-level infrastructure:} Facilitates data I/O, communication
+      between disparate methods in an analytical pipeline, and cross-platform compatability
+      \item \textbf{Semantic typing:} A rich and extensible type system prevents user
       error, supports backwards compatability and collaboration
-      \item Sharing: Allows secure interaction with QIIME 2 artifacts and
-      visualizations without a software installation
+      \item \textbf{Sharing:} Allows secure interaction with QIIME 2 Results
+       without a software installation
     \end{itemize}
   \end{block}
+
+  \begin{figure}[tph!]
+  {\includegraphics[height=20cm]{assets/action_call_sequence_diagram}}
+  \caption{\,Plugins (green) reduce development overhead by utilizing existing infrastructure (blue).}
+  \label{fig:callSequence}
+  \end{figure}
 
   \begin{block}{Develop a method or algorithm}
 
@@ -123,7 +127,7 @@
   language accessible to Python 3 with a sub-process call: popular plugins wrap
   code written in R and C, and many options exist.\\
   \hfill\break
-  Example: the q2\_alignment plugin wraps the MAFFT application by importing \code{subprocess}, generating input and output filepaths, building a command for the OS from user parameters, and using that command to run MAFFT.\\
+  Example: the q2\_alignment plugin wraps the MAFFT application by importing \code{subprocess}, generating I/O filepaths, building a command for the OS, and using that command to run MAFFT.\\
       \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
       {
@@ -146,41 +150,7 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
 \end{tabbing}}}}
       }
     \end{tcolorbox}
-
-  For the remainder of this poster, we will work with code examples from
-  \code{q2-diversity-lib}, a plugin in development for release with QIIME 2 2019.4
   \end{block}
-
-  \begin{block}{Annotate your method}
-    QIIME 2 visualizations can be shared and viewed without a software
-    install, and contain complete provenance information.
-
-    \begin{enumerate}
-      \item Interactive visualizations are significant in understanding and
-      communicating our data. (Figure \ref{fig:taxabar-plot})
-      \item QIIME 2's provenance graphs allow us to review which methods and
-      parameters were used, simplifying creation of an accurate methods section
-      and supplementary materials for academic publications.
-      \item We can generate a citation list for any result in this poster with \code{qiime tools citations}
-      \item Collaborators and reviewers of our work can use https://view.qiime2.org to confirm methods and outcomes are
-      appropriate, without the need to download any special software. (Figure 6)
-    \end{enumerate}
-
-  \begin{tcolorbox}
-  [width=\textwidth, colframe=blue]
-  {By packaging \code{Result}s with provenance, QIIME 2 reduces the risk that the
-  methods used to produce a given outcome are accidentally misreported.
-  QIIME 2 has integrated citation information into plugins, allowing
-  researchers to export citations as BibTeX}.
-  \end{tcolorbox}
-
-\end{block}
-
-\end{column}
-
-\separatorcolumn
-
-\begin{column}{\colwidth}
 
   \begin{block}{Introduce new kinds of data}
     Some computational methods require the creation of novel data formats, or
@@ -197,24 +167,47 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \end{tcolorbox}
   \end{block}
 
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+\begin{block}{Annotate your method}
+  Plugin annotation allows the QIIME 2 framework to recognize and communicate with plugins.
+  Further, it creates a "common language" for composing analytical pipelines,
+  assigning semantic types to method results which allow them to be interpreted by other
+  methods in any other plugin.
+
+  Plugin annotation is simple (see Figure ~\ref{fig:registrationDiagram}), and allows plugin documentation
+  to be generated in any interface. Citation information registered in plugins
+  is automatically captured in Result provenance.
+
+  To annotate your plugin:
+
+  \begin{enumerate}
+    \item Import any necessary dependencies (e.g. the \code{Plugin}) method from \code{qiime2.plugin},
+    or existing semantic types from \code{q2\_types}), and the top-level folder that holds your plugin's methods. TODO: WORKSHOP THIS
+    \item Use \code{Plugin()} to register your plugin.
+    \item Use \code{register\_function()} to register \textit{each} public method the plugin offers
+    \item Use \code{TODO: FX Name} to register any new semantic types or formats available in this plugin.
+  \end{enumerate}
+
+\end{block}
+
   \begin{block}{Visualizations}
     \begin{figure}[tph!]
     {\includegraphics[height=24cm]{assets/DevelopmentProcessDiagramGreyWBG}}
     \caption{\,QIIME 2 plugin development cycle diagram. }
-    \label{fig:taxabar-plot}
+    \label{fig:processDiagram}
     \end{figure}
 
     \begin{figure}[tph!]
-    {\includegraphics[height=14cm]{assets/provenance}}
-    \caption{\,Provenance tree describing the production of a taxonomic bar plot visualization. Provenance is automatically packaged with ever QIIME 2 Artifact. QR code provides interactive access to provenance tree and bar plot.}
-    \label{fig:provenance}
+    {\includegraphics[height=24cm]{assets/registrationDiagram}}
+    \caption{\,Overview of registration annotation for QIIME 2 plugins}
+    \label{fig:registrationDiagram}
     \end{figure}
 
-    \begin{figure}[tph!]
-      {\includegraphics[height=18cm]{assets/q2studio}}
-      \caption{\,QIIME 2 Studio provides GUI access to all QIIME 2 plugins installed in the currently active QIIME 2 environment}
-      \label{fig:q2studio}
-      \end{figure}
   \end{block}
 
   \begin{block}{Project Funding}
@@ -245,52 +238,53 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
 
   \begin{block}{Create a python package}
 
-    Plugins are python packages with metadata hooks which QIIME 2 uses to facilitate
-    communication with the other plugins in a given deployment. Packaging
-    provides the added benefit of making plugin installation easy for users:
+    Plugins are python packages with metadata hooks QIIME 2 uses to facilitate
+    communication with the other plugins in a deployment. Packaging
+    simplifies plugin installation for users, and provides access to the QIIME 2 platform.
 
     \begin{figure}[tph!]
-      {\includegraphics[height=16cm]{assets/HPC_Analysis}}
-      \caption{\,TODO: Diagram like the MAKE THE REPO diagram in Claire's walkthrough}
-      \label{fig:dada2}
+      {\includegraphics[height=10cm]{assets/package_structure}}
+      \caption{\,File map of a simple python package. Note \code{plugin\_setup.py} required for QIIME 2 plugins.
+      TODO: Rebuild this in a more visually appealing way.}
+      \label{fig:packageStructure}
     \end{figure}
 
     \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
     {Python packaging may be the most challenging part of plugin creation
-    for new developers, because the structure of your software will dictate
-    the structure of the package you build. }
+    for new developers, because software structure impacts package structure.
+    Generally, the structure resembles Figure ~\ref{fig:packageStructure}}
     \end{tcolorbox}
-    TODO: Reference the tree above\\
+
     General guidelines:
     \begin{itemize}
       \item Define one or more Python 3 functions, installable with \code{setuptools}
       \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
       \item In your plugin package's \code{setup.py}, define that instance as an entry point
-      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which contains function definitions. Note: some of these \code{\_\_init\_\_.py}
-      files will only serve to aggregate and make visible subfolder function names
+      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which
+      contains function definitions. These make function names accessible for registration and use.
     \end{itemize}
   \end{block}
 
   \begin{block}{Publish and support}
 
-    QIIME 2’s decentralized provenance tracking makes it easy for anyone to reproduce our
-    computational analysis independently to confirm the quality of our results.
-    Should one choose to expand our study, or conduct further research using
-    similar methods, provenance graphs provide a “road map”.
+    Completed plugins may be published to the QIIME 2 Library, and announced
+    in the Community Contributions category of the QIIME 2 forum. Many developers
+    also use the forum as their primary platform for user support.
+
+    Though optional, most developers publish their plugins on Conda. This greatly
+    improves dependency handling and simplifies installation.
 
   \end{block}
 
   \begin{block}{Future capabilities}
 
     \begin{itemize}
-      \item \textbf{Allow QIIME 2 to consume provenance:} Reading
-      provenance \textit{into} QIIME 2 could allow for computer-assisted
-      introspection into research methods, automated transcription of methods
-      for publication, and auto-generation of “pipeline” scripts for common workflows.
-      \item \textbf{QIIME 2 Studio and HPC:} In the future, we hope that QIIME 2 Studio might interact
-      directly with HPC schedulers, to simplify the process of connecting with
-      and running computationally-intensive processes remotely.
+      \item \textbf{TODO: SP? Type Map:} A new type map system will launch in QIIME 2 2019.4,
+      allowing developers powerful new tools for manipulating and constraining the types of
+      data used and produced by methods. Type map will allow plugins to assign
+      nuanced types to their outputs programatically (e.g. based on parameterization),
+      and will enhance plugins' ability to intelligently constrain allowable data inputs.
     \end{itemize}
 
   \end{block}
@@ -302,6 +296,7 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
       \item \href{https://dev.qiime2.org/latest/storing-data/types/}{Semantic and Primitive Types: dev.qiime2.org/latest/storing-data/types/}
       \item \href{https://library.qiime2.org/}{QIIME 2 Library: library.qiime2.org/}
       \item \href{https://python-packaging.readthedocs.io/en/latest/minimal.html}{Python Packaging: python-packaging.readthedocs.io/en/latest/minimal.html}
+      \item \href{https://dev.qiime2.org/latest/tutorials/conda-tutorial/}{Publishing plugins on Conda: dev.qiime2.org/latest/tutorials/conda-tutorial/}
     \end{itemize}
   \end{block}
 
