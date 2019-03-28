@@ -60,7 +60,7 @@
 % Title
 % ====================
 
-\title{Developing a QIIME 2 plugin - a Simple Annotation for Robust Tools}
+\title{Developing a QIIME 2 Plugin - a Simple Annotation for Robust Tools}
 
 \author{Christopher R. Keefe \and Evan Bolyen \and Matthew Ryan Dillon \and J. Gregory Caporaso}
 
@@ -94,7 +94,7 @@
 
     \begin{figure}[tph!]
     {\includegraphics[height=16cm]{assets/infrastructure_diagram_bicolor}}
-    \caption{\,Plugins reduce development overhead by utilizing existing infrastructure (purple).}
+    \caption{\,QIIME 2 plugins reduce development overhead by utilizing existing infrastructure (blue).}
     \label{fig:infrastructure}
     \end{figure}
 
@@ -113,7 +113,7 @@
       between disparate methods in an analytical pipeline, and cross-platform compatability
       \item \textbf{Semantic typing:} A rich and extensible type system prevents user
       error, supports backwards compatability and collaboration
-      \item \textbf{Sharing:} QIIME 2 View allows convenient sharing of QIIME 2 results
+      \item \textbf{Sharing:} QIIME 2 View allows convenient sharing of QIIME 2 Results
     \end{itemize}
   \end{block}
 
@@ -122,7 +122,7 @@
   In order to develop a QIIME 2 plugin, you must first have code you would
   like to run in QIIME 2. Your method may be written Python 3, or in any
   language accessible to Python 3 with a sub-process call: popular plugins wrap
-  code written in R and C, and many options exist.\\
+  code written in R and C, and many other options exist.\\
   \hfill\break
   Example: the q2-alignment plugin wraps the MAFFT application by importing \code{subprocess}, generating I/O filepaths, building a command for the OS, and using that command to run MAFFT.\\
       \begin{tcolorbox}
@@ -160,7 +160,7 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \begin{enumerate}
       \item Import any necessary dependencies from other plugins.
       \item Use \code{Plugin()} to instantiate your plugin.
-      \item Use \code{register\_function()} to register \textit{each} public action the plugin offers
+      \item Use \code{register\_function()} to register \textit{each} public Action the plugin offers
       \item Use \code{register\_semantic\_types()} and \code{register\_semantic\_type\_to\_format()} to register any new semantic types or formats available in this plugin.
     \end{enumerate}
   \end{block}
@@ -190,13 +190,13 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
 
   \begin{block}{Visualizations}
     \begin{figure}[tph!]
-    {\includegraphics[height=24cm]{assets/DevelopmentProcessDiagramFlattop}}
+    {\includegraphics[height=28cm]{assets/DevelopmentProcessDiagramFlattop}}
     \caption{\,QIIME 2 plugin development cycle }
     \label{fig:processDiagram}
     \end{figure}
 
     \begin{figure}[tph!]
-    {\includegraphics[height=24cm]{assets/registrationDiagram}}
+    {\includegraphics[width=\textwidth]{assets/registrationDiagram}}
     \caption{\,Overview of registration annotation for QIIME 2 plugins}
     \label{fig:registrationDiagram}
     \end{figure}
@@ -232,8 +232,8 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
   \begin{block}{Create a Python package}
 
     Plugins are Python packages with metadata hooks QIIME 2 uses to facilitate
-    communication with the other plugins in a deployment. Packaging
-    simplifies plugin installation for users, and provides access to the QIIME 2 platform.
+    communication between plugins. Packaging
+    simplifies plugin installation, and provides access to the QIIME 2 platform.
 
     \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
@@ -246,7 +246,7 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \begin{itemize}
       \item Define one or more Python 3 functions in a package
       \item Include \code{\_\_init\_\_.py} files for every subpackage of your
-      plugin. (This is a requirement of a Python package.)
+      plugin (a requirement of Python packages).
       \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
       \item In your plugin package's \code{setup.py}, define that instance as an entry point
     \end{itemize}
@@ -269,7 +269,7 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
 
     Plugins are often publishable as software announcements in academic journals.
     Recently-published plugins include \code{q2-perc-norm}\cite{Gibbons1006102},
-    \code{q2-itsexpress}\cite{Rivers15704-1}, \code{DEICODE}\cite{Martinoe00016-19}, and \code{q2-clawback}\cite{Kaehler406611}.
+    \code{q2-itsexpress}\cite{Rivers15704-1}, and \code{DEICODE}\cite{Martinoe00016-19}.
 
   \end{block}
 
@@ -278,13 +278,13 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \begin{itemize}
       \item \textbf{TypeMap:} A new type map system will launch in QIIME 2 2019.4,
       giving developers powerful new tools for manipulating and constraining the types of
-      data used and produced by actions. TypeMap will allow plugins to assign
+      data used and produced by Actions. TypeMap will allow plugins to assign
       nuanced types to their outputs programatically (e.g. based on parameterization),
       and will enhance plugins' ability to intelligently constrain allowable data inputs
       even through user-defined workflows.
       \item \textbf{\code{q2-galaxy:}} A new Galaxy interface (\code{galaxyproject.org})
       is planned for launch in QIIME 2 2019.7 or 2019.10. This powerful GUI will
-      be capable of performing any actions in a given QIIME 2 deployment, and
+      be capable of performing any Actions in a given QIIME 2 deployment, and
       will support centralized QIIME 2 installations effectively.
     \end{itemize}
 
@@ -295,7 +295,6 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
       \item \href{https://dev.qiime2.org/latest/tutorials/first-plugin-tutorial/}{Developing a (QIIME 2) Plugin for Dummies: dev.qiime2.org/latest/tutorials/first-plugin-tutorial/}
       \item \href{https://docs.qiime2.org/2019.1/plugins/developing/}{Developing a QIIME 2 Plugin: docs.qiime2.org/2019.1/plugins/developing/}
       \item \href{https://dev.qiime2.org/latest/storing-data/types/}{Semantic and Primitive Types: dev.qiime2.org/latest/storing-data/types/}
-      \item \href{https://library.qiime2.org/}{QIIME 2 Library: library.qiime2.org/}
       \item \href{https://python-packaging.readthedocs.io/en/latest/minimal.html}{Python Packaging: python-packaging.readthedocs.io/en/latest/minimal.html}
       \item \href{https://dev.qiime2.org/latest/tutorials/conda-tutorial/}{Publishing plugins on Conda: dev.qiime2.org/latest/tutorials/conda-tutorial/}
     \end{itemize}
