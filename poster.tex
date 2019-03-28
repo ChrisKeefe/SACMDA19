@@ -80,24 +80,22 @@
 
   \begin{block}{Objective and Introduction}
 
-    \textbf{Objective:} To provide a high-level introduction to the process and
-     benefits of developing a  QIIME 2 \cite{10.7287/peerj.preprints.27295v1}
-     plugin for computational methods for microbiome science.
-    \hfill\break
-
-    \textbf{Introduction:} By wrapping a script in a Python 3 package, then
-    annotating it with information about the commands it makes available, the
-    parameters they expose, and the types of data they take in and put out, a
-    plugin author can take advantage of existing QIIME 2 infrastructure. This
-    can greatly increase the robustness and accessibility of their script,
-    improve distribution and citation, and facilitate the integration of
-    their method with new and existing analytical pipelines.
+    \textbf{Introduction:}
+    Developers of computational methods for microbiome science can greatly increase
+    the robustness and accessibility of their software, improve distribution and citation,
+    and facilitate the integration of their methods with new and existing analytical
+    pipelines by taking advantage of existing QIIME 2 \cite{10.7287/peerj.preprints.27295v1}
+    infrastructure. Doing so can be as simple as wrapping a script in a Python 3
+    package, then annotating with information about the commands it makes available, the
+    parameters they expose, and the types of data they input and output. Additional
+    resources exist in the QIIME 2 ecosystem for developers who wish to disseminate and
+    support their methods, or collaborate with other developers.
     \hfill\break
 
     \begin{figure}[tph!]
-    {\includegraphics[height=20cm]{assets/action_call_sequence_diagram}}
-    \caption{\,Plugins (green) reduce development overhead by utilizing existing infrastructure (blue).}
-    \label{fig:callSequence}
+    {\includegraphics[height=16cm]{assets/infrastructure_diagram_bicolor}}
+    \caption{\,Plugins reduce development overhead by utilizing existing infrastructure (purple).}
+    \label{fig:infrastructure}
     \end{figure}
 
     \textbf{QIIME 2 provides:}
@@ -109,13 +107,13 @@
       \item \textbf{Visibility:} Centralized plugin dissemination through the QIIME 2
       Library
       \item \textbf{Provenance:} Integrated and automatic tracking of data provenance
-      ensures reproducibility. Built-in citation supports attribution.
+      ensures reproducibility.
+      \item \textbf{Citation Support:} Built-in citation tracking supports attribution.
       \item \textbf{Low-level infrastructure:} Facilitates data I/O, communication
       between disparate methods in an analytical pipeline, and cross-platform compatability
       \item \textbf{Semantic typing:} A rich and extensible type system prevents user
       error, supports backwards compatability and collaboration
-      \item \textbf{Sharing:} Allows secure interaction with QIIME 2 Results
-       without a software installation
+      \item \textbf{Sharing:} QIIME 2 View allows convenient sharing of QIIME 2 results
     \end{itemize}
   \end{block}
 
@@ -151,10 +149,34 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \end{tcolorbox}
   \end{block}
 
-  \begin{block}{Introduce new kinds of data}
-    Some computational methods require the creation of novel data formats, or
-    entirely new types of data. By defining these as Semantic Types in your plugin,
-    you allow other QIIME 2 plugins to recognize and use your new data types effectively.
+  \begin{block}{Annotate your method}
+    Plugin annotation allows the QIIME 2 framework to recognize and communicate with plugins.
+    Annotation is simple (see Figure ~\ref{fig:registrationDiagram}), and allows plugin documentation
+    to be generated in any interface. Citation information registered in plugins
+    is automatically captured in Result provenance.
+
+    To annotate a plugin:
+
+    \begin{enumerate}
+      \item Import any necessary dependencies from other plugins.
+      \item Use \code{Plugin()} to instantiate your plugin.
+      \item Use \code{register\_function()} to register \textit{each} public action the plugin offers
+      \item Use \code{register\_semantic\_types()} and \code{register\_semantic\_type\_to\_format()} to register any new semantic types or formats available in this plugin.
+    \end{enumerate}
+  \end{block}
+
+\end{column}
+
+\separatorcolumn
+
+\begin{column}{\colwidth}
+
+\begin{block}{Introduce new kinds of data}
+  Some computational methods require the creation of novel data formats, or
+  entirely new types of data. By defining these as Semantic Types in your plugin,
+  you allow other QIIME 2 plugins to recognize and use your new data types effectively.
+  Assigning semantic types to computed Results allows them to be interpreted by
+  any other plugin. This "common language" enables the composition of analytical pipelines.
 
     \begin{tcolorbox}
     [width=\textwidth, colframe=blue]
@@ -166,38 +188,10 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
     \end{tcolorbox}
   \end{block}
 
-\end{column}
-
-\separatorcolumn
-
-\begin{column}{\colwidth}
-
-\begin{block}{Annotate your method}
-  Plugin annotation allows the QIIME 2 framework to recognize and communicate with plugins.
-  Further, it creates a "common language" for composing analytical pipelines,
-  assigning semantic types to method results which allow them to be interpreted by other
-  methods in any other plugin.
-
-  Plugin annotation is simple (see Figure ~\ref{fig:registrationDiagram}), and allows plugin documentation
-  to be generated in any interface. Citation information registered in plugins
-  is automatically captured in Result provenance.
-
-  To annotate your plugin:
-
-  \begin{enumerate}
-    \item Import any necessary dependencies (e.g. the \code{Plugin}) method from \code{qiime2.plugin},
-    or existing semantic types from \code{q2\_types}), and the top-level folder that holds your plugin's methods. TODO: WORKSHOP THIS
-    \item Use \code{Plugin()} to register your plugin.
-    \item Use \code{register\_function()} to register \textit{each} public action the plugin offers
-    \item Use \code{TODO: FX Name} to register any new semantic types or formats available in this plugin.
-  \end{enumerate}
-
-\end{block}
-
   \begin{block}{Visualizations}
     \begin{figure}[tph!]
     {\includegraphics[height=24cm]{assets/DevelopmentProcessDiagramFlattop}}
-    \caption{\,QIIME 2 plugin development cycle diagram. }
+    \caption{\,QIIME 2 plugin development cycle }
     \label{fig:processDiagram}
     \end{figure}
 
@@ -250,18 +244,17 @@ def \=maff\=t(se\=quences: DNAFASTAFormat,\\
 
     General guidelines:
     \begin{itemize}
-      \item Define one or more Python 3 functions, installable with \code{setuptools}
+      \item Define one or more Python 3 functions in a package
+      \item Include \code{\_\_init\_\_.py} files for every subpackage of your
+      plugin. (This is a requirement of a Python package.)
       \item In your \code{plugin\_setup.py}, instantiate a \code{qiime2.plugin.Plugin} object
       \item In your plugin package's \code{setup.py}, define that instance as an entry point
-      \item Include \code{\_\_init\_\_.py} files for every subfolder of your plugin which
-      contains function definitions. These make function names accessible for registration and use.
     \end{itemize}
   \end{block}
 
   \begin{figure}[tph!]
     {\includegraphics[height=10cm]{assets/packageStructure}}
-    \caption{\,File map of a simple Python package. Note \code{plugin\_setup.py} required for QIIME 2 plugins.
-    TODO: Rebuild this in a more visually appealing way.}
+    \caption{\,File map of a simple Python package. Note \code{plugin\_setup.py} required for QIIME 2 plugins.}
     \label{fig:packageStructure}
   \end{figure}
 
